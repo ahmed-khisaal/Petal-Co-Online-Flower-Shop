@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Petal & Co</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0f1117; --surface:#1a1d27; --surface2:#22263a;
+      --rose:#e07070; --rose-dk:#c85050; --sage:#7a9e7e;
+      --text:#e8e6f0; --muted:#8b8fa8; --border:#2e3250;
+      --radius:12px; --transition:.2s cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
+
+    /* Sidebar */
+    .sidebar{width:240px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1.5rem 1rem;flex-shrink:0;}
+    .sb-brand{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--text);padding:.5rem .8rem 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+    .sb-brand span{color:var(--rose);}
+    .sb-section{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.4rem .8rem;margin-top:1rem;}
+    .sb-link{display:flex;align-items:center;gap:.7rem;padding:.7rem .8rem;border-radius:8px;text-decoration:none;color:var(--muted);font-size:.875rem;transition:all var(--transition);}
+    .sb-link:hover,.sb-link.active{background:var(--surface2);color:var(--text);}
+    .sb-link.active{border-left:2px solid var(--rose);padding-left:.6rem;}
+    .sb-icon{font-size:1rem;width:20px;text-align:center;}
+    .sb-logout{margin-top:auto;border-top:1px solid var(--border);padding-top:1rem;}
+
+    /* Main */
+    .main{flex:1;padding:2rem;overflow-x:hidden;}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
+    .topbar h1{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;}
+    .topbar-date{font-size:.8rem;color:var(--muted);}
+
+    /* Stat cards */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.2rem;margin-bottom:2rem;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;}
+    .stat-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;}
+    .stat-val{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--text);}
+    .stat-val.highlight{color:var(--rose);}
+    .stat-sub{font-size:.78rem;color:var(--muted);margin-top:.3rem;}
+
+    /* Flashes */
+    .flashes{margin-bottom:1.5rem;}
+    .flash{padding:.75rem 1rem;border-radius:8px;font-size:.85rem;margin-bottom:.5rem;}
+    .flash.success{background:rgba(122,158,126,.15);color:#9de0a3;border:1px solid rgba(122,158,126,.3);}
+    .flash.info{background:rgba(99,131,200,.15);color:#9ab4e8;border:1px solid rgba(99,131,200,.3);}
+    .flash.error{background:rgba(224,112,112,.15);color:#f09090;border:1px solid rgba(224,112,112,.3);}
+
+    /* Section */
+    .section-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
+    .section-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;}
+
+    /* Table */
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;font-size:.85rem;}
+    thead{background:var(--surface2);}
+    thead th{padding:.8rem 1rem;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;}
+    tbody tr{border-bottom:1px solid var(--border);transition:background var(--transition);}
+    tbody tr:hover{background:var(--surface2);}
+    tbody td{padding:.85rem 1rem;}
+
+    /* Badges */
+    .badge{display:inline-block;padding:.2rem .65rem;border-radius:50px;font-size:.7rem;font-weight:500;letter-spacing:.04em;}
+    .badge-pending{background:rgba(255,200,80,.15);color:#ffc850;}
+    .badge-delivered{background:rgba(122,158,126,.15);color:#9de0a3;}
+    .badge-processing{background:rgba(99,131,200,.15);color:#9ab4e8;}
+    .badge-cancelled{background:rgba(224,112,112,.15);color:#f09090;}
+
+    /* Buttons */
+    .btn{display:inline-block;padding:.45rem 1rem;border-radius:6px;font-size:.78rem;font-weight:500;text-decoration:none;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all var(--transition);}
+    .btn-danger{background:rgba(224,112,112,.2);color:#f09090;border:1px solid rgba(224,112,112,.3);}
+    .btn-danger:hover{background:#e07070;color:var(--bg);}
+    .btn-clear{background:rgba(224,112,112,.1);color:#f09090;border:1px solid rgba(224,112,112,.2);padding:.6rem 1.2rem;font-size:.8rem;}
+    .btn-clear:hover{background:#e07070;color:var(--bg);}
+
+    /* Status select */
+    .status-select{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.3rem .5rem;font-size:.75rem;font-family:'DM Sans',sans-serif;cursor:pointer;}
+    .status-select:focus{outline:none;}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sb-brand">Petal<span>&</span>Co <small style="font-size:.7rem;opacity:.4;font-family:'DM Sans'">Admin</small></div>
+
+  <div class="sb-section">Overview</div>
+  <a href="/admin" class="sb-link active"><span class="sb-icon">📊</span> Dashboard</a>
+
+  <div class="sb-section">Manage</div>
+  <a href="/admin/customers" class="sb-link"><span class="sb-icon">👥</span> Customers</a>
+
+  <div class="sb-section">Site</div>
+  <a href="/" class="sb-link" target="_blank"><span class="sb-icon">🌐</span> View Website</a>
+
+  <div class="sb-logout">
+    <a href="/admin_logout" class="sb-link"><span class="sb-icon">🚪</span> Logout</a>
+  </div>
+</nav>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <h1>Dashboard</h1>
+    <span class="topbar-date" id="adminDate"></span>
+  </div>
+
+  <!-- Flashes -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flashes">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Orders</div>
+      <div class="stat-val">{{ total_orders }}</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending Orders</div>
+      <div class="stat-val highlight">{{ pending }}</div>
+      <div class="stat-sub">Awaiting dispatch</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Registered Customers</div>
+      <div class="stat-val">{{ total_customers }}</div>
+      <div class="stat-sub">Accounts created</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-val highlight">₹{{ "{:,}".format(total_revenue) }}</div>
+      <div class="stat-sub">Cumulative sales</div>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div class="section-card">
+    <div class="section-title">
+      <span>📋 Orders</span>
+      <a href="/admin/clear_orders"
+         onclick="return confirm('This will delete ALL orders and customers. Are you sure?')"
+         class="btn btn-clear">⚠ Clear All</a>
+    </div>
+
+    {% if orders %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Flower</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td style="color:var(--muted);">{{ order['id'] }}</td>
+            <td style="font-weight:500;">{{ order['name'] }}</td>
+            <td style="color:var(--muted);font-size:.8rem;">{{ order['email'] or '—' }}</td>
+            <td>{{ order['flower'] }}</td>
+            <td>{{ order['quantity'] }}</td>
+            <td style="color:var(--rose);font-weight:500;">₹{{ order['total'] }}</td>
+            <td style="color:var(--muted);font-size:.8rem;">{{ order['order_date'][:10] }}</td>
+            <td>
+              <form action="/admin/update_status/{{ order['id'] }}" method="post" style="display:inline;">
+                <select name="status" class="status-select" onchange="this.form.submit()">
+                  {% for s in ['Pending','Processing','Delivered','Cancelled'] %}
+                  <option value="{{ s }}" {% if order['status']==s %}selected{% endif %}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+            </td>
+            <td>
+              <a href="/admin/delete_order/{{ order['id'] }}"
+                 onclick="return confirm('Delete this order?')"
+                 class="btn btn-danger">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p style="text-align:center;padding:3rem;color:var(--muted);">No orders yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  const d = new Date();
+  document.getElementById('adminDate').textContent = d.toLocaleDateString('en-IN', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+</script>
+</body>
+</html>

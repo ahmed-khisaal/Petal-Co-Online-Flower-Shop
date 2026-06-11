@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customers — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--rose:#e07070;--text:#e8e6f0;--muted:#8b8fa8;--border:#2e3250;--radius:12px;--transition:.2s;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
+    .sidebar{width:240px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1.5rem 1rem;flex-shrink:0;}
+    .sb-brand{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--text);padding:.5rem .8rem 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+    .sb-brand span{color:var(--rose);}
+    .sb-section{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.4rem .8rem;margin-top:1rem;}
+    .sb-link{display:flex;align-items:center;gap:.7rem;padding:.7rem .8rem;border-radius:8px;text-decoration:none;color:var(--muted);font-size:.875rem;transition:all var(--transition);}
+    .sb-link:hover,.sb-link.active{background:var(--surface2);color:var(--text);}
+    .sb-link.active{border-left:2px solid var(--rose);padding-left:.6rem;}
+    .sb-logout{margin-top:auto;border-top:1px solid var(--border);padding-top:1rem;}
+    .main{flex:1;padding:2rem;overflow-x:hidden;}
+    .topbar h1{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;margin-bottom:2rem;}
+    .section-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;}
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;font-size:.85rem;}
+    thead{background:var(--surface2);}
+    thead th{padding:.8rem 1rem;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;}
+    tbody tr{border-bottom:1px solid var(--border);transition:background var(--transition);}
+    tbody tr:hover{background:var(--surface2);}
+    tbody td{padding:.85rem 1rem;}
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  </style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="sb-brand">Petal<span>&</span>Co <small style="font-size:.7rem;opacity:.4;font-family:'DM Sans'">Admin</small></div>
+  <div class="sb-section">Overview</div>
+  <a href="/admin" class="sb-link"><span>📊</span> Dashboard</a>
+  <div class="sb-section">Manage</div>
+  <a href="/admin/customers" class="sb-link active"><span>👥</span> Customers</a>
+  <div class="sb-section">Site</div>
+  <a href="/" class="sb-link" target="_blank"><span>🌐</span> View Website</a>
+  <div class="sb-logout"><a href="/admin_logout" class="sb-link"><span>🚪</span> Logout</a></div>
+</nav>
+
+<div class="main">
+  <div class="topbar"><h1>Registered Customers</h1></div>
+  <div class="section-card">
+    {% if customers %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Joined</th></tr>
+        </thead>
+        <tbody>
+          {% for c in customers %}
+          <tr>
+            <td style="color:var(--muted);">{{ c['id'] }}</td>
+            <td style="font-weight:500;">{{ c['name'] }}</td>
+            <td style="color:var(--muted);font-size:.8rem;">{{ c['email'] }}</td>
+            <td>{{ c['phone'] }}</td>
+            <td style="color:var(--muted);font-size:.8rem;">{{ c['address'] }}</td>
+            <td style="color:var(--muted);font-size:.8rem;">{{ c['joined'][:10] if c['joined'] else '—' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p style="text-align:center;padding:3rem;color:var(--muted);">No registered customers yet.</p>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

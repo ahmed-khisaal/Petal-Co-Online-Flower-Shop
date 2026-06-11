@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — Petal & Co</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f1117; --surface:#1a1d27; --rose:#e07070; --text:#e8e6f0; --muted:#8b8fa8; --border:#2e3250; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:380px;}
+    .brand{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;text-align:center;margin-bottom:.3rem;}
+    .brand span{color:var(--rose);}
+    .subtitle{text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:2rem;}
+    .form-group{margin-bottom:1.2rem;}
+    .form-group label{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;}
+    .form-group input{width:100%;padding:.75rem 1rem;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;}
+    .form-group input:focus{border-color:var(--rose);}
+    .btn{width:100%;padding:.85rem;background:var(--rose);color:var(--bg);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:background .2s;}
+    .btn:hover{background:#c85050;}
+    .error{background:rgba(224,112,112,.15);color:#f09090;border:1px solid rgba(224,112,112,.3);border-radius:8px;padding:.7rem 1rem;font-size:.85rem;margin-bottom:1.2rem;}
+    .back{display:block;text-align:center;margin-top:1.2rem;font-size:.8rem;color:var(--muted);text-decoration:none;}
+    .back:hover{color:var(--text);}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">Petal<span>&</span>Co</div>
+    <div class="subtitle">Administrator Access</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="error">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form action="/admin_login" method="post">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" required autofocus placeholder="admin">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn">Sign In</button>
+    </form>
+    <a href="/" class="back">← Back to website</a>
+  </div>
+</body>
+</html>

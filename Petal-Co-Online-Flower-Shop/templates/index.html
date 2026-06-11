@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block title %}Petal & Co — Fresh Flowers, Delivered{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── Hero ── */
+  .hero {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #fdf0eb 0%, #f7e6e0 40%, #ede8f0 100%);
+    padding: 6rem 2rem 5rem; text-align: center;
+  }
+  .hero::before {
+    content: "✿";
+    position: absolute; top: -20px; right: 8%;
+    font-size: 220px; opacity: .06; line-height: 1;
+    animation: float 6s ease-in-out infinite;
+  }
+  .hero::after {
+    content: "❀";
+    position: absolute; bottom: -30px; left: 4%;
+    font-size: 180px; opacity: .05; line-height: 1;
+    animation: float 8s ease-in-out infinite reverse;
+  }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-18px); } }
+  .hero-eyebrow {
+    font-size: .8rem; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--rose); font-weight: 500; margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 7vw, 5rem); font-weight: 300;
+    line-height: 1.1; color: var(--ink); margin-bottom: 1.2rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--rose); }
+  .hero p {
+    font-size: 1.05rem; color: var(--muted);
+    max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.7;
+  }
+  .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* ── Stats strip ── */
+  .stats-strip {
+    background: var(--ink); color: var(--white);
+    padding: 1.5rem 2rem;
+  }
+  .stats-inner {
+    max-width: 900px; margin: auto;
+    display: grid; grid-template-columns: repeat(3,1fr); text-align: center;
+  }
+  .stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 600; color: #e8a09c;
+  }
+  .stat-label { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; opacity: .6; }
+
+  /* ── Why us ── */
+  .why { padding: 5rem 2rem; background: var(--white); }
+  .why-inner { max-width: 1100px; margin: auto; }
+  .why-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem; margin-top: 3rem;
+  }
+  .why-card { text-align: center; padding: 2.5rem 1.5rem; border-radius: var(--radius); background: var(--cream); }
+  .why-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+  .why-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; margin-bottom: .5rem; }
+  .why-card p { font-size: .875rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── Featured flowers ── */
+  .featured { padding: 5rem 2rem; }
+  .featured-inner { max-width: 1200px; margin: auto; }
+  .flower-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.8rem; margin-top: 3rem;
+  }
+  .flower-card { border-radius: var(--radius); overflow: hidden; background: var(--white); box-shadow: var(--shadow); transition: all var(--transition); }
+  .flower-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+  .flower-img-wrap { position: relative; overflow: hidden; height: 200px; background: var(--blush); }
+  .flower-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+  .flower-card:hover .flower-img-wrap img { transform: scale(1.05); }
+  .flower-badge {
+    position: absolute; top: 12px; left: 12px;
+    background: var(--white); color: var(--rose);
+    font-size: .7rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+    padding: .25rem .6rem; border-radius: 50px;
+  }
+  .flower-body { padding: 1.2rem 1.4rem 1.5rem; }
+  .flower-body h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; margin-bottom: .3rem; }
+  .flower-body p { font-size: .8rem; color: var(--muted); margin-bottom: 1rem; line-height: 1.5; }
+  .flower-footer { display: flex; align-items: center; justify-content: space-between; }
+  .flower-price { font-size: 1.1rem; font-weight: 600; color: var(--rose); }
+
+  /* ── CTA Banner ── */
+  .cta-banner {
+    background: linear-gradient(135deg, var(--rose) 0%, #b84e48 100%);
+    color: var(--white); padding: 5rem 2rem; text-align: center;
+  }
+  .cta-banner h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 300; margin-bottom: 1rem;
+  }
+  .cta-banner p { opacity: .85; margin-bottom: 2rem; font-size: 1rem; }
+  .btn-white { background: var(--white); color: var(--rose); }
+  .btn-white:hover { background: var(--cream); }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+  <p class="hero-eyebrow">🌸 Fresh · Fragrant · Fast Delivery</p>
+  <h1>Beautiful flowers for<br>every <em>special moment</em></h1>
+  <p>Handpicked blooms delivered fresh to your door — from romantic roses to exotic orchids, we have the perfect flower for every occasion.</p>
+  <div class="hero-cta">
+    <a href="/flowers" class="btn btn-primary">Shop All Flowers</a>
+    <a href="/register" class="btn btn-outline">Create Account</a>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div><div class="stat-val">500+</div><div class="stat-label">Happy Customers</div></div>
+    <div><div class="stat-val">8</div><div class="stat-label">Flower Varieties</div></div>
+    <div><div class="stat-val">24h</div><div class="stat-label">Fast Delivery</div></div>
+  </div>
+</div>
+
+<!-- Why Us -->
+<section class="why">
+  <div class="why-inner">
+    <div class="section-header" style="padding-top:0">
+      <h1>Why Choose Petal &amp; Co?</h1>
+      <div class="divider"></div>
+      <p>We deliver more than flowers — we deliver emotions.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">🌺</div>
+        <h3>Farm-Fresh Quality</h3>
+        <p>Every bloom is sourced directly from local farms, ensuring peak freshness on arrival.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🚚</div>
+        <h3>Same-Day Delivery</h3>
+        <p>Order before 2 PM and receive your flowers the same day — anywhere in the city.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">💳</div>
+        <h3>Affordable Prices</h3>
+        <p>Premium flowers shouldn't cost a fortune. Our prices start at just ₹399.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🎁</div>
+        <h3>Gift Wrapping</h3>
+        <p>Complimentary gift wrapping with a personalised message card on every order.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Flowers -->
+<section class="featured" style="background:var(--cream);">
+  <div class="featured-inner">
+    <div class="section-header" style="padding-top:0">
+      <h1>Featured Blooms</h1>
+      <div class="divider"></div>
+      <p>Our most-loved flowers this season</p>
+    </div>
+    <div class="flower-grid">
+      {% for flower in featured %}
+      <div class="flower-card">
+        <div class="flower-img-wrap">
+          <span class="flower-badge">{{ flower.category }}</span>
+          <img src="/static/images/{{ flower.image }}" alt="{{ flower.name }}"
+               onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#f2e4dc,#e8d5cc)'">
+        </div>
+        <div class="flower-body">
+          <h3>{{ flower.name }}</h3>
+          <p>{{ flower.description[:70] }}…</p>
+          <div class="flower-footer">
+            <span class="flower-price">₹{{ flower.price }}</span>
+            <a href="/order?flower={{ flower.name }}" class="btn btn-primary btn-sm">Order Now</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:3rem;">
+      <a href="/flowers" class="btn btn-outline">View All Flowers →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Banner -->
+<section class="cta-banner">
+  <h2>Ready to make someone smile?</h2>
+  <p>Create an account and place your first order in under 2 minutes.</p>
+  <a href="/register" class="btn btn-white">Get Started Free</a>
+</section>
+{% endblock %}

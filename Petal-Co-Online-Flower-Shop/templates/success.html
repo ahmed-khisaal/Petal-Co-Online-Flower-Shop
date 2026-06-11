@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed — Petal & Co{% endblock %}
+
+{% block extra_head %}
+<style>
+  .success-wrap { max-width:540px; margin:3rem auto; padding:0 1.5rem 5rem; text-align:center; }
+  .success-icon { font-size:4rem; animation:pop .4s cubic-bezier(.175,.885,.32,1.275); }
+  @keyframes pop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+  .success-wrap h1 { font-family:'Cormorant Garamond',serif; font-size:2.2rem; margin:.8rem 0 .4rem; color:var(--ink); }
+  .success-wrap > p { color:var(--muted); margin-bottom:2rem; }
+
+  .receipt {
+    background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:2rem; text-align:left; position:relative;
+  }
+  .receipt::before {
+    content:''; position:absolute; top:-12px; left:0; right:0;
+    height:12px;
+    background:repeating-linear-gradient(90deg, var(--cream) 0, var(--cream) 12px, var(--rose) 12px, var(--rose) 24px);
+    border-radius:var(--radius) var(--radius) 0 0;
+  }
+  .receipt-header { display:flex; justify-content:space-between; align-items:start; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px dashed var(--border); }
+  .receipt-brand { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; color:var(--ink); }
+  .receipt-brand span { color:var(--rose); }
+  .receipt-id { font-size:.75rem; color:var(--muted); text-align:right; }
+  .receipt-id strong { display:block; font-size:1rem; color:var(--ink); }
+
+  .receipt-row { display:flex; justify-content:space-between; padding:.5rem 0; font-size:.9rem; }
+  .receipt-row:not(:last-child) { border-bottom:1px solid var(--border); }
+  .receipt-row .label { color:var(--muted); }
+  .receipt-row .value { font-weight:500; color:var(--ink); text-align:right; }
+  .receipt-total { background:var(--ink); color:var(--white); padding:1rem 1.2rem; border-radius:8px; margin-top:1.2rem; display:flex; justify-content:space-between; align-items:center; }
+  .receipt-total .t-label { font-size:.85rem; opacity:.7; }
+  .receipt-total .t-val { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:600; color:#e8a09c; }
+
+  .success-actions { display:flex; gap:1rem; margin-top:2rem; flex-wrap:wrap; justify-content:center; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-wrap">
+  <div class="success-icon">✅</div>
+  <h1>Order Confirmed!</h1>
+  <p>Thank you for your order. Your flowers will be delivered soon.</p>
+
+  <div class="receipt">
+    <div class="receipt-header">
+      <div>
+        <div class="receipt-brand">Petal<span>&</span>Co</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:.2rem;">Order Receipt</div>
+      </div>
+      <div class="receipt-id">
+        <span>Order ID</span>
+        <strong>#{{ order_id }}</strong>
+      </div>
+    </div>
+
+    <div class="receipt-row">
+      <span class="label">Customer</span>
+      <span class="value">{{ name }}</span>
+    </div>
+    <div class="receipt-row">
+      <span class="label">Flower</span>
+      <span class="value">{{ flower }}</span>
+    </div>
+    <div class="receipt-row">
+      <span class="label">Quantity</span>
+      <span class="value">{{ quantity }} bunch{% if quantity > 1 %}es{% endif %}</span>
+    </div>
+    <div class="receipt-row">
+      <span class="label">Order Date</span>
+      <span class="value">{{ order_date }}</span>
+    </div>
+    <div class="receipt-row">
+      <span class="label">Status</span>
+      <span class="value"><span class="badge badge-pending">Pending</span></span>
+    </div>
+
+    <div class="receipt-total">
+      <span class="t-label">Amount Paid</span>
+      <span class="t-val">₹{{ total }}</span>
+    </div>
+  </div>
+
+  <div class="success-actions">
+    <a href="/flowers" class="btn btn-primary">Shop More</a>
+    <a href="/my_orders" class="btn btn-outline">My Orders</a>
+    <a href="/" class="btn" style="background:var(--cream);color:var(--ink);">Go Home</a>
+  </div>
+</div>
+{% endblock %}

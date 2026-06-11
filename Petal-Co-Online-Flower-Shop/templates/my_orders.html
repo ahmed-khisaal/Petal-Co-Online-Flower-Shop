@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}My Orders — Petal & Co{% endblock %}
+
+{% block extra_head %}
+<style>
+  .page-wrap { max-width:900px; margin:0 auto; padding:0 1.5rem 5rem; }
+  .order-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:1.2rem; overflow:hidden; transition:box-shadow var(--transition); }
+  .order-card:hover { box-shadow:var(--shadow-lg); }
+  .order-card-header { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; background:var(--cream); border-bottom:1px solid var(--border); }
+  .order-id { font-size:.78rem; color:var(--muted); }
+  .order-id strong { color:var(--ink); font-size:.95rem; }
+  .order-card-body { padding:1.2rem 1.5rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1rem; }
+  .order-field label { font-size:.7rem; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:.2rem; }
+  .order-field .val { font-size:.9rem; font-weight:500; color:var(--ink); }
+  .empty-state { text-align:center; padding:5rem 2rem; }
+  .empty-state .ei { font-size:3.5rem; margin-bottom:1rem; }
+  .empty-state h2 { font-family:'Cormorant Garamond',serif; font-size:1.8rem; margin-bottom:.5rem; }
+  .empty-state p { color:var(--muted); margin-bottom:1.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section-header">
+  <h1>My Orders</h1>
+  <div class="divider"></div>
+  <p>Track all your flower orders in one place</p>
+</div>
+
+<div class="page-wrap">
+  {% if orders %}
+    {% for order in orders %}
+    <div class="order-card">
+      <div class="order-card-header">
+        <div class="order-id">Order <strong>#{{ order['id'] }}</strong></div>
+        <span class="badge badge-{{ order['status']|lower }}">{{ order['status'] }}</span>
+      </div>
+      <div class="order-card-body">
+        <div class="order-field"><label>Flower</label><div class="val">{{ order['flower'] }}</div></div>
+        <div class="order-field"><label>Quantity</label><div class="val">{{ order['quantity'] }} bunch{% if order['quantity']>1 %}es{% endif %}</div></div>
+        <div class="order-field"><label>Total</label><div class="val" style="color:var(--rose)">₹{{ order['total'] }}</div></div>
+        <div class="order-field"><label>Date</label><div class="val">{{ order['order_date'][:10] }}</div></div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state">
+    <div class="ei">🌿</div>
+    <h2>No orders yet</h2>
+    <p>Your order history will appear here once you place your first order.</p>
+    <a href="/flowers" class="btn btn-primary">Shop Flowers</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

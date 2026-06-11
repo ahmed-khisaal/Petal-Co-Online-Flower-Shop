@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Order {{ flower.name }} — Petal & Co{% endblock %}
+
+{% block extra_head %}
+<style>
+  .order-wrap { max-width:800px; margin:3rem auto; padding:0 1.5rem 4rem; }
+  .order-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+  @media(max-width:640px) { .order-grid { grid-template-columns:1fr; } }
+
+  /* Left: Flower preview */
+  .flower-preview { border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+  .flower-preview-img { height:280px; background:var(--blush); overflow:hidden; }
+  .flower-preview-img img { width:100%; height:100%; object-fit:cover; }
+  .flower-preview-info { padding:1.5rem; background:var(--white); }
+  .flower-preview-info h2 { font-family:'Cormorant Garamond',serif; font-size:1.5rem; margin-bottom:.3rem; }
+  .flower-cat { font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--rose); font-weight:500; margin-bottom:.8rem; }
+  .flower-desc { font-size:.875rem; color:var(--muted); line-height:1.6; margin-bottom:1rem; }
+  .flower-unit-price { font-size:.875rem; color:var(--muted); }
+  .flower-unit-price strong { color:var(--ink); font-size:1.1rem; }
+
+  /* Right: Order form */
+  .order-form-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem; }
+  .order-form-card h2 { font-family:'Cormorant Garamond',serif; font-size:1.4rem; margin-bottom:1.5rem; color:var(--ink); }
+  .qty-control { display:flex; align-items:center; gap:.8rem; }
+  .qty-btn {
+    width:36px; height:36px; border-radius:50%; border:1.5px solid var(--border);
+    background:var(--white); font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    color:var(--ink); transition:all var(--transition);
+  }
+  .qty-btn:hover { background:var(--rose); color:var(--white); border-color:var(--rose); }
+  .qty-input {
+    width:60px; text-align:center; padding:.5rem;
+    border:1.5px solid var(--border); border-radius:8px;
+    font-size:1rem; font-family:'DM Sans',sans-serif; color:var(--ink);
+    background:var(--cream); outline:none;
+  }
+  .order-summary {
+    background:var(--cream); border-radius:8px; padding:1.2rem;
+    margin:1.5rem 0; border:1px dashed var(--border);
+  }
+  .summary-row { display:flex; justify-content:space-between; font-size:.875rem; margin-bottom:.4rem; }
+  .summary-row:last-child { margin-top:.8rem; padding-top:.8rem; border-top:1px solid var(--border); font-weight:600; font-size:1rem; }
+  .summary-row span:last-child { color:var(--rose); }
+  input[name="flower"] { background:var(--blush) !important; cursor:default; color:var(--muted); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="order-wrap">
+  <div class="section-header" style="padding-top:2rem;">
+    <h1>Place Your Order</h1>
+    <div class="divider"></div>
+  </div>
+
+  <div class="order-grid">
+    <!-- Flower preview -->
+    <div class="flower-preview">
+      <div class="flower-preview-img">
+        <img src="/static/images/{{ flower.image }}" alt="{{ flower.name }}"
+             onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#f2e4dc,#e8d5cc)'">
+      </div>
+      <div class="flower-preview-info">
+        <div class="flower-cat">{{ flower.category }}</div>
+        <h2>{{ flower.name }}</h2>
+        <p class="flower-desc">{{ flower.description }}</p>
+        <p class="flower-unit-price">Price per bunch: <strong>₹{{ flower.price }}</strong></p>
+      </div>
+    </div>
+
+    <!-- Order form -->
+    <div class="order-form-card">
+      <h2>Your Details</h2>
+      <form action="/place_order" method="post" id="orderForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" value="{{ session.customer_name or '' }}" required placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+          <label>Flower</label>
+          <input type="text" name="flower" value="{{ flower.name }}" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>Quantity</label>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
+            <input type="number" name="quantity" id="qtyInput" class="qty-input" value="1" min="1" max="99" required onchange="updateSummary()">
+            <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+
+        <!-- Live summary -->
+        <div class="order-summary">
+          <div class="summary-row"><span>Unit price</span><span>₹{{ flower.price }}</span></div>
+          <div class="summary-row"><span>Quantity</span><span id="summaryQty">1</span></div>
+          <div class="summary-row"><span>Total Amount</span><span id="summaryTotal">₹{{ flower.price }}</span></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+          🌸 Confirm Order
+        </button>
+      </form>
+      <div style="text-align:center;margin-top:1rem;">
+        <a href="/flowers" style="font-size:.85rem;color:var(--muted);text-decoration:none;">← Back to flowers</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const UNIT_PRICE = {{ flower.price }};
+  function changeQty(delta) {
+    const inp = document.getElementById('qtyInput');
+    let val = parseInt(inp.value) + delta;
+    if (val < 1) val = 1;
+    if (val > 99) val = 99;
+    inp.value = val;
+    updateSummary();
+  }
+  function updateSummary() {
+    const qty = parseInt(document.getElementById('qtyInput').value) || 1;
+    document.getElementById('summaryQty').textContent = qty;
+    document.getElementById('summaryTotal').textContent = '₹' + (UNIT_PRICE * qty).toLocaleString('en-IN');
+  }
+</script>
+{% endblock %}
